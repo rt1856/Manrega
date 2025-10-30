@@ -1,0 +1,7 @@
+Flask==2.3.2
+Flask-Cors==3.0.10
+SQLAlchemy==2.0.24
+pymysql==1.1.0           # MySQL driver; use psycopg2-binary for Postgres instead
+python-dotenv==1.0.0
+requests==2.31.0
+gunicorn==21.2.0

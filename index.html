@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="gu">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>મનરેગા પ્રદર્શન | MGNREGA Performance</title>
+  <link rel="stylesheet" href="styles.css">
+  <meta name="theme-color" content="#16A34A">
+  <meta name="description" content="Access MGNREGA performance data easily.">
+</head>
+<body>
+
+  <!-- Landing Screen -->
+  <div id="landing-screen" class="screen active" aria-live="polite">
+    <div class="header-logo">
+      <span class="icon-hoe" aria-hidden="true">🪚</span>
+      <h1>મનરેગા પ્રદર્શન</h1>
+    </div>
+    <h2>તમારા જિલ્લાનું પ્રદર્શન જુઓ</h2>
+
+    <button id="use-location-btn" class="large-btn primary-btn">
+      📍 મારું સ્થાન વાપરો
+    </button>
+
+    <p class="divider">અથવા</p>
+
+    <select id="district-select" class="large-select" aria-label="જિલ્લો પસંદ કરો">
+      <option value="" disabled selected>જિલ્લો પસંદ કરો</option>
+    </select>
+
+    <button id="manual-select-btn" class="large-btn secondary-btn">
+      આગળ વધો
+    </button>
+
+    <div class="lang-selector" role="navigation">
+      <a href="#" class="active" lang="gu">ગુજરાતી</a> |
+      <a href="#" lang="hi">हिन्दी</a> |
+      <a href="#" lang="en">English</a>
+    </div>
+  </div>
+
+  <!-- Dashboard Screen -->
+  <div id="dashboard-screen" class="screen" aria-live="polite">
+    <header class="app-header">
+      <h1 class="district-name">જિલ્લો</h1>
+      <div class="data-info">
+        <span id="data-date">ડેટા લોડ થઈ રહ્યું છે...</span>
+        <button id="audio-play-all" class="audio-btn">► સમાચાર સાંભળો</button>
+      </div>
+      <nav class="nav-tabs" role="tablist">
+        <button class="tab-btn active" data-target="now-view">હાલનું</button>
+        <button class="tab-btn" data-target="trend-view">૧ વર્ષનો ટ્રેન્ડ</button>
+        <button class="tab-btn" data-target="compare-view">સરખામણી</button>
+      </nav>
+    </header>
+
+    <!-- Now View -->
+    <div id="now-view" class="view active" role="tabpanel">
+      <div id="metrics-container" class="metrics-grid">
+        <p>ડેટા લોડ થઈ રહ્યું છે...</p>
+      </div>
+    </div>
+
+    <!-- Trend View -->
+    <div id="trend-view" class="view" role="tabpanel" hidden>
+      <h2>૧૨ મહિનાનો ટ્રેન્ડ</h2>
+      <canvas id="trend-chart" width="400" height="200"></canvas>
+    </div>
+
+    <!-- Compare View -->
+    <div id="compare-view" class="view" role="tabpanel" hidden>
+      <h2>સરખામણી</h2>
+      <div id="compare-container"></div>
+    </div>
+  </div>
+
+  <!-- Help Overlay -->
+  <div id="help-overlay" class="overlay">
+    <div class="overlay-content">
+      <h2>મદદ અને માહિતી</h2>
+      <div class="faq-item">
+        <p>મનરેગા યોજના શું છે?</p>
+        <button class="audio-btn" data-audio="મનરેગા યોજના ગ્રામિણ લોકોને રોજગાર આપે છે.">►</button>
+      </div>
+      <button id="close-help" class="large-btn secondary-btn">બંધ કરો</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer id="dashboard-footer" class="footer">
+    <button id="footer-help">❓ મદદ</button>
+    <button id="footer-share">🔗 શેર કરો</button>
+    <div class="offline-status">📡 PWA</div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
