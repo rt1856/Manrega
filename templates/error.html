@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <span class="english-text">Error</span>
+                    <span class="hindi-text">त्रुटि</span>
+                </h4>
+            </div>
+            <div class="card-body text-center py-5">
+                <i class="fas fa-times-circle fa-4x text-danger mb-4"></i>
+                <h5 class="english-text">{{ message }}</h5>
+                <h6 class="hindi-text text-muted">{{ hindi_message }}</h6>
+                <div class="mt-4">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home me-2"></i>
+                        <span class="english-text">Go Home</span>
+                        <span class="hindi-text">होम पर जाएं</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

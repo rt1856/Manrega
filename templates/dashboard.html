@@ -1,0 +1,357 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h2 text-primary">
+                    <i class="fas fa-tachometer-alt me-2"></i>
+                    {{ district_info[1]|default("District") }} - Performance Dashboard
+                </h1>
+                <p class="hindi-text h4 text-secondary mb-1">{{ district_info[2]|default("") }} - प्रदर्शन डैशबोर्ड</p>
+                <p class="gujarati-text h4 text-secondary mb-1">{{ district_info[3]|default("") }} - પ્રદર્શન ડેશબોર્ડ</p>
+            </div>
+            <a href="/comparison?district={{ district_info[0]|default('') }}" class="btn btn-primary">
+                <i class="fas fa-chart-bar me-1"></i>
+                <span class="english-text">View Comparison</span>
+                <span class="hindi-text">तुलना देखें</span>
+                <span class="gujarati-text">તુલના જુઓ</span>
+            </a>
+        </div>
+
+        {% if performance_data %}
+            <!-- Key Performance Indicators -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title">{{ performance_data.households_provided_employment|default(0)|format_number }}</h4>
+                                    <p class="card-text english-text">Households Employed</p>
+                                    <p class="card-text hindi-text">रोजगारित परिवार</p>
+                                    <p class="card-text gujarati-text">રોજગારી મળેલા ઘરગથ્થુઓ</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-home fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title">{{ performance_data.persons_worked|default(0)|format_number }}</h4>
+                                    <p class="card-text english-text">Persons Worked</p>
+                                    <p class="card-text hindi-text">काम करने वाले व्यक्ति</p>
+                                    <p class="card-text gujarati-text">કામ કરનાર વ્યક્તિઓ</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-users fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title">{{ performance_data.total_person_days|default(0)|format_number }}</h4>
+                                    <p class="card-text english-text">Total Person Days</p>
+                                    <p class="card-text hindi-text">कुल व्यक्ति दिवस</p>
+                                    <p class="card-text gujarati-text">કુલ વ્યક્તિ દિવસ</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-calendar-alt fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h4 class="card-title">₹{{ performance_data.total_expenditure|default(0)|format_number }}</h4>
+                                    <p class="card-text english-text">Total Expenditure</p>
+                                    <p class="card-text hindi-text">कुल व्यय</p>
+                                    <p class="card-text gujarati-text">કુલ ખર્ચ</p>
+                                </div>
+                                <div class="align-self-center">
+                                    <i class="fas fa-rupee-sign fa-2x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts and Additional Metrics -->
+            <div class="row">
+                <!-- Left Column -->
+                <div class="col-md-8">
+                    <!-- Employment Trends Chart -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-chart-line me-2"></i>
+                                <span class="english-text">Employment Trends</span>
+                                <span class="hindi-text">रोजगार रुझान</span>
+                                <span class="gujarati-text">રોજગાર રુઝાન</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="employmentChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Works Progress -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-tasks me-2"></i>
+                                <span class="english-text">Works Progress</span>
+                                <span class="hindi-text">कार्य प्रगति</span>
+                                <span class="gujarati-text">કામ પ્રગતિ</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-md-4 mb-3">
+                                    <h3 class="text-primary">{{ performance_data.works_taken_up|default(0) }}</h3>
+                                    <p class="english-text">Works Taken Up</p>
+                                    <p class="hindi-text">शुरू किए गए कार्य</p>
+                                    <p class="gujarati-text">શરૂ કરાયેલ કામ</p>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <h3 class="text-success">{{ performance_data.works_completed|default(0) }}</h3>
+                                    <p class="english-text">Works Completed</p>
+                                    <p class="hindi-text">पूर्ण किए गए कार्य</p>
+                                    <p class="gujarati-text">પૂર્ણ કરાયેલ કામ</p>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <h3 class="text-info">
+                                        {% if performance_data.works_taken_up and performance_data.works_taken_up > 0 %}
+                                            {{ ((performance_data.works_completed|default(0) / performance_data.works_taken_up * 100)|round(1)) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </h3>
+                                    <p class="english-text">Completion Rate</p>
+                                    <p class="hindi-text">पूर्णता दर</p>
+                                    <p class="gujarati-text">પૂર્ણતા દર</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column -->
+                <div class="col-md-4">
+                    <!-- Demographic Participation -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-user-friends me-2"></i>
+                                <span class="english-text">Participation</span>
+                                <span class="hindi-text">भागीदारी</span>
+                                <span class="gujarati-text">ભાગીદારી</span>
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <!-- Women Participation -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="english-text">Women</span>
+                                    <span class="hindi-text">महिलाएं</span>
+                                    <span class="gujarati-text">મહિલાઓ</span>
+                                    <strong>
+                                        {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}
+                                            {{ ((performance_data.women_person_days|default(0) / performance_data.total_person_days * 100)|round(1)) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" 
+                                         style="width: {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}{{ (performance_data.women_person_days|default(0) / performance_data.total_person_days * 100) }}{% else %}0{% endif %}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SC Participation -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="english-text">SC</span>
+                                    <span class="hindi-text">अनुसूचित जाति</span>
+                                    <span class="gujarati-text">અનુસૂચિત જાતિ</span>
+                                    <strong>
+                                        {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}
+                                            {{ ((performance_data.sc_person_days|default(0) / performance_data.total_person_days * 100)|round(1)) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" 
+                                         style="width: {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}{{ (performance_data.sc_person_days|default(0) / performance_data.total_person_days * 100) }}{% else %}0{% endif %}%">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ST Participation -->
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span class="english-text">ST</span>
+                                    <span class="hindi-text">अनुसूचित जनजाति</span>
+                                    <span class="gujarati-text">અનુસૂચિત જનજાતિ</span>
+                                    <strong>
+                                        {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}
+                                            {{ ((performance_data.st_person_days|default(0) / performance_data.total_person_days * 100)|round(1)) }}%
+                                        {% else %}
+                                            0%
+                                        {% endif %}
+                                    </strong>
+                                </div>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" 
+                                         style="width: {% if performance_data.total_person_days and performance_data.total_person_days > 0 %}{{ (performance_data.st_person_days|default(0) / performance_data.total_person_days * 100) }}{% else %}0{% endif %}%">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Expenditure Efficiency -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-money-bill-wave me-2"></i>
+                                <span class="english-text">Expenditure Efficiency</span>
+                                <span class="hindi-text">व्यय दक्षता</span>
+                                <span class="gujarati-text">ખર્ચ કાર્યક્ષમતા</span>
+                            </h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <h3 class="text-primary">
+                                {% if performance_data.persons_worked and performance_data.persons_worked > 0 %}
+                                    ₹{{ (performance_data.total_expenditure|default(0) / performance_data.persons_worked)|round|int }}
+                                {% else %}
+                                    ₹0
+                                {% endif %}
+                            </h3>
+                            <p class="english-text">Per Person Expenditure</p>
+                            <p class="hindi-text">प्रति व्यक्ति व्यय</p>
+                            <p class="gujarati-text">પ્રતિ વ્યક્તિ ખર્ચ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <span class="english-text">No performance data available for this district.</span>
+                <span class="hindi-text">इस जिले के लिए कोई प्रदर्शन डेटा उपलब्ध नहीं है।</span>
+                <span class="gujarati-text">આ જિલ્લા માટે કોઈ પ્રદર્શન ડેટા ઉપલબ્ધ નથી.</span>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    {% if performance_data %}
+        const performanceData = {
+            households_provided_employment: {{ performance_data.households_provided_employment|default(0) }},
+            persons_worked: {{ performance_data.persons_worked|default(0) }},
+            total_person_days: {{ performance_data.total_person_days|default(0) }},
+            total_expenditure: {{ performance_data.total_expenditure|default(0) }},
+            works_taken_up: {{ performance_data.works_taken_up|default(0) }},
+            works_completed: {{ performance_data.works_completed|default(0) }},
+            women_person_days: {{ performance_data.women_person_days|default(0) }},
+            sc_person_days: {{ performance_data.sc_person_days|default(0) }},
+            st_person_days: {{ performance_data.st_person_days|default(0) }}
+        };
+
+        // Employment Trends Chart
+        const employmentCtx = document.getElementById('employmentChart');
+        if (employmentCtx) {
+            new Chart(employmentCtx.getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Households', 'Persons', 'Person Days'],
+                    datasets: [{
+                        label: 'Employment Metrics',
+                        data: [
+                            performanceData.households_provided_employment,
+                            performanceData.persons_worked,
+                            performanceData.total_person_days
+                        ],
+                        backgroundColor: [
+                            'rgba(54, 162, 235, 0.8)',
+                            'rgba(75, 192, 192, 0.8)',
+                            'rgba(153, 102, 255, 0.8)'
+                        ],
+                        borderColor: [
+                            'rgb(54, 162, 235)',
+                            'rgb(75, 192, 192)',
+                            'rgb(153, 102, 255)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const value = context.raw;
+                                    if (value >= 1000000) {
+                                        return `${context.label}: ${(value / 1000000).toFixed(2)}M`;
+                                    } else if (value >= 1000) {
+                                        return `${context.label}: ${(value / 1000).toFixed(1)}K`;
+                                    }
+                                    return `${context.label}: ${value}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return (value / 1000000).toFixed(1) + 'M';
+                                    } else if (value >= 1000) {
+                                        return (value / 1000).toFixed(0) + 'K';
+                                    }
+                                    return value;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    {% endif %}
+});
+</script>
+{% endblock %}

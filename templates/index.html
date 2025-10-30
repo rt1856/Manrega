@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Hero Section -->
+        <div class="card hero-card mb-5">
+            <div class="card-body text-center py-5">
+                <h1 class="display-4 text-primary mb-3">
+                    <i class="fas fa-hands-helping me-3"></i>
+                    <span class="english-text">MGNREGA Gujarat Dashboard</span>
+                </h1>
+                <h2 class="hindi-text h3 text-secondary mb-2">मनरेगा गुजरात डैशबोर्ड</h2>
+                <h2 class="gujarati-text h3 text-secondary mb-4">મનરેગા ગુજરાત ડેશબોર્ડ</h2>
+                <p class="lead english-text">
+                    Track your district's MGNREGA performance in simple, understandable terms
+                </p>
+                <p class="hindi-text lead">
+                    अपने जिले के मनरेगा प्रदर्शन को सरल, समझने योग्य शब्दों में ट्रैक करें
+                </p>
+                <p class="gujarati-text lead">
+                    તમારા જિલ્લાના મનરેગા પ્રદર્શનને સરળ, સમજી શકાય તેવા શબ્દોમાં ટ્રૅક કરો
+                </p>
+            </div>
+        </div>
+
+        <!-- District Selection Card -->
+        <div class="card shadow-lg">
+            <div class="card-header bg-success text-white py-3">
+                <h4 class="mb-0">
+                    <i class="fas fa-map-marker-alt me-2"></i>
+                    <span class="english-text">Select Your District</span>
+                    <span class="hindi-text">अपना जिला चुनें</span>
+                    <span class="gujarati-text">તમારો જિલ્લો પસંદ કરો</span>
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Location Detection -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <button id="detectLocation" class="btn btn-outline-primary btn-lg w-100 mb-3">
+                            <i class="fas fa-location-arrow me-2"></i>
+                            <span class="english-text">Auto Detect My District</span>
+                            <span class="hindi-text">मेरा जिला स्वचालित पहचानें</span>
+                            <span class="gujarati-text">મારો જિલ્લો સ્વચાલિત ઓળખો</span>
+                        </button>
+                        <div id="locationResult" class="alert alert-info d-none text-center"></div>
+                    </div>
+                </div>
+
+                <!-- Manual Selection -->
+                <form id="districtForm" action="/dashboard" method="get">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-4">
+                                <label for="district" class="form-label h5">
+                                    <span class="english-text">Select District</span>
+                                    <span class="hindi-text">जिला चुनें</span>
+                                    <span class="gujarati-text">જિલ્લો પસંદ કરો</span>
+                                </label>
+                                <select class="form-select form-select-lg" id="district" name="district" required>
+                                    <option value="">-- Select District -- जिला चुनें -- જિલ્લો પસંદ કરો --</option>
+                                    {% for code, name, name_hindi, name_gujarati in districts %}
+                                        <option value="{{ code }}">{{ name }} - {{ name_hindi }} - {{ name_gujarati }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="mb-4">
+                                <label for="year" class="form-label h5">
+                                    <span class="english-text">Year</span>
+                                    <span class="hindi-text">वर्ष</span>
+                                    <span class="gujarati-text">વર્ષ</span>
+                                </label>
+                                <select class="form-select form-select-lg" id="year" name="year">
+                                    {% for y in range(2020, 2026) %}
+                                        <option value="{{ y }}" {% if y == 2024 %}selected{% endif %}>{{ y }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                            <div class="mb-4">
+                                <label for="month" class="form-label h5">
+                                    <span class="english-text">Month</span>
+                                    <span class="hindi-text">महीना</span>
+                                    <span class="gujarati-text">મહિનો</span>
+                                </label>
+                                <select class="form-select form-select-lg" id="month" name="month">
+                                    {% for m in range(1, 13) %}
+                                        <option value="{{ m }}" {% if m == 6 %}selected{% endif %}>
+                                            {{ m|get_month_name }}
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
+                        <i class="fas fa-chart-bar me-2"></i>
+                        <span class="english-text">View District Performance</span>
+                        <span class="hindi-text">जिला प्रदर्शन देखें</span>
+                        <span class="gujarati-text">જિલ્લો પ્રદર્શન જુઓ</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Information Cards -->
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                        <h5 class="english-text">12.15 Crore Beneficiaries</h5>
+                        <h6 class="hindi-text">12.15 करोड़ लाभार्थी</h6>
+                        <h6 class="gujarati-text">12.15 કરોડ લાભાર્થીઓ</h6>
+                        <p class="text-muted small english-text">Across India in 2025</p>
+                        <p class="text-muted small hindi-text">2025 में पूरे भारत में</p>
+                        <p class="text-muted small gujarati-text">2025માં સમગ્ર ભારતમાં</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-rupee-sign fa-3x text-success mb-3"></i>
+                        <h5 class="english-text">100 Days Employment</h5>
+                        <h6 class="hindi-text">100 दिन रोजगार</h6>
+                        <h6 class="gujarati-text">100 દિવસ રોજગાર</h6>
+                        <p class="text-muted small english-text">Guaranteed per household</p>
+                        <p class="text-muted small hindi-text">प्रति परिवार गारंटीकृत</p>
+                        <p class="text-muted small gujarati-text">પ્રતિ ઘરગથ્થુ ગેરંટીડ</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 info-card">
+                    <div class="card-body text-center">
+                        <i class="fas fa-female fa-3x text-warning mb-3"></i>
+                        <h5 class="english-text">Women Empowerment</h5>
+                        <h6 class="hindi-text">महिला सशक्तिकरण</h6>
+                        <h6 class="gujarati-text">મહિલા સશક્તિકરણ</h6>
+                        <p class="text-muted small english-text">33% participation ensured</p>
+                        <p class="text-muted small hindi-text">33% भागीदारी सुनिश्चित</p>
+                        <p class="text-muted small gujarati-text">33% ભાગીદારી ખાતરી</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
