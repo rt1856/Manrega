@@ -223,16 +223,20 @@ class DatabaseManager:
         
         return nearest
     
-    def get_comparison_data(self, district_code, compare_with='state'):
-        """Get comparison data for a district"""
-        district_data = self.get_performance_data(district_code, 2024, 6)
-        
+    def get_comparison_data(self, district_code, compare_with='state', year=None, month=None):
+        """Get comparison data for a district, year, and month"""
+        if year is None:
+            year = datetime.now().year
+        if month is None:
+            month = datetime.now().month
+        district_data = self.get_performance_data(district_code, year, month)
+
         if not district_data or not district_data['records']:
             return None
-        
+
         base_data = district_data['records'][0]
-        
-        # Generate comparison data
+
+        # TODO: Replace with real state average calculation from DB if available
         comparison = {
             'district': base_data,
             'state_avg': {
@@ -246,5 +250,5 @@ class DatabaseManager:
             'district_rank': 15,
             'total_districts': 33
         }
-        
+
         return comparison

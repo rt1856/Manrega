@@ -1,720 +1,344 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h2 text-primary">
-                    <i class="fas fa-chart-bar me-2"></i>
-                    {{ district_info[1]|default("District") }} - Performance Comparison
-                </h1>
-                <p class="hindi-text h4 text-secondary mb-1">{{ district_info[2]|default("") }} - प्रदर्शन तुलना</p>
-                <p class="gujarati-text h4 text-secondary mb-1">{{ district_info[3]|default("") }} - પ્રદર્શન તુલના</p>
-            </div>
-            <a href="/dashboard?district={{ district_info[0]|default('') }}" class="btn btn-outline-primary">
-                <i class="fas fa-arrow-left me-1"></i>
-                <span class="english-text">Back to Dashboard</span>
-                <span class="hindi-text">डैशबोर्ड पर वापस</span>
-                <span class="gujarati-text">ડેશબોર્ડ પર પાછા</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>District Comparison - MGNREGA Analytics</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .analytics-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            border: none;
+        }
+        .comparison-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #007bff;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .rank-badge {
+            background: #ffc107;
+            color: #000;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-chart-line"></i> MGNREGA Analytics
             </a>
         </div>
+    </nav>
 
-        {% if comparison_data and comparison_data.district and comparison_data.state_avg %}
-            <!-- Comparison Type Selector -->
-            <div class="card mb-4">
-                <div class="card-body">
+    <div class="container mt-4">
+        <!-- Header Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="analytics-card p-4">
                     <div class="row align-items-center">
                         <div class="col-md-8">
-                            <h5 class="english-text mb-1">Compare With:</h5>
-                            <h5 class="hindi-text mb-1">तुलना करें:</h5>
-                            <h5 class="gujarati-text mb-1">તુલના કરો:</h5>
-                        </div>
-                        <div class="col-md-4">
-                            <select class="form-select" id="compareWith" onchange="updateComparison()">
-                                <option value="state" {% if compare_with == 'state' %}selected{% endif %}>
-                                    State Average - राज्य औसत - રાજ્ય સરેરાશ
-                                </option>
-                                <option value="neighbors" {% if compare_with == 'neighbors' %}selected{% endif %}>
-                                    Neighboring Districts - पड़ोसी जिले - પડોશી જિલ્લાઓ
-                                </option>
-                                <option value="top" {% if compare_with == 'top' %}selected{% endif %}>
-                                    Top Performing - शीर्ष प्रदर्शन - ટોપ પ્રદર્શન
-                                </option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Rank Information -->
-            <div class="row mb-4">
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-primary">#{{ comparison_data.district_rank|default('N/A') }}</h3>
-                            <p class="mb-0 english-text">Rank in Gujarat</p>
-                            <p class="mb-0 hindi-text">गुजरात में रैंक</p>
-                            <p class="mb-0 gujarati-text">ગુજરાતમાં રેન્ક</p>
-                            <small class="text-muted">
-                                <span class="english-text">out of {{ comparison_data.total_districts|default(0) }} districts</span>
-                                <span class="hindi-text">{{ comparison_data.total_districts|default(0) }} जिलों में से</span>
-                                <span class="gujarati-text">{{ comparison_data.total_districts|default(0) }} જિલ્લાઓમાંથી</span>
-                            </small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-success">
-                                {% if comparison_data.total_districts and comparison_data.district_rank %}
-                                    {{ (((comparison_data.total_districts - comparison_data.district_rank + 1) / comparison_data.total_districts * 100)|round)|default(0) }}%
+                            <h2 class="mb-1">
+                                {% if current_language == 'hi' %}
+                                    {{ district_info.district_name_hindi }}
+                                {% elif current_language == 'gu' %}
+                                    {{ district_info.district_name_gujarati }}
                                 {% else %}
-                                    0%
+                                    {{ district_info.district_name }}
                                 {% endif %}
-                            </h3>
-                            <p class="mb-0 english-text">Performance Percentile</p>
-                            <p class="mb-0 hindi-text">प्रदर्शन प्रतिशतक</p>
-                            <p class="mb-0 gujarati-text">પ્રદર્શન પ્રતિશત</p>
+                            </h2>
+                            <p class="mb-0">District Performance Comparison</p>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <div class="rank-badge d-inline-block">
+                                <i class="fas fa-trophy"></i> Rank: {{ comparison_data.district_rank }}/{{ comparison_data.total_districts }}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4 mb-3">
-                    <div class="card bg-light">
-                        <div class="card-body text-center">
-                            <h3 class="text-warning">
-                                {% if comparison_data.total_districts and comparison_data.district_rank %}
-                                    {% set performance_score = ((comparison_data.total_districts - comparison_data.district_rank + 1) / comparison_data.total_districts * 100)|round %}
-                                    {% if performance_score >= 80 %}
-                                        Excellent
-                                    {% elif performance_score >= 60 %}
-                                        Good
-                                    {% elif performance_score >= 40 %}
-                                        Average
-                                    {% else %}
-                                        Needs Improvement
-                                    {% endif %}
-                                {% else %}
-                                    Not Rated
-                                {% endif %}
-                            </h3>
-                            <p class="mb-0 english-text">Performance Rating</p>
-                            <p class="mb-0 hindi-text">प्रदर्शन रेटिंग</p>
-                            <p class="mb-0 gujarati-text">પ્રદર્શન રેટિંગ</p>
-                        </div>
+            </div>
+        </div>
+
+        <!-- Comparison Metrics -->
+        <div class="row">
+            <!-- Households Provided Employment -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="comparison-card p-3 h-100">
+                    <h6 class="text-muted">Households Provided Employment</h6>
+                    <div class="metric-value text-primary">
+                        {{ comparison_data.district.households_provided_employment|format_number }}
+                    </div>
+                    <div class="text-muted small">
+                        State Avg: {{ comparison_data.state_avg.households_provided_employment|format_number }}
+                    </div>
+                    {% set hh_percentage = comparison_data.comparison_percentages.households_provided_employment %}
+                    <div class="mt-2">
+                        {% if hh_percentage > 0 %}
+                            <span class="positive"><i class="fas fa-arrow-up"></i> {{ hh_percentage }}% above average</span>
+                        {% elif hh_percentage < 0 %}
+                            <span class="negative"><i class="fas fa-arrow-down"></i> {{ hh_percentage|abs }}% below average</span>
+                        {% else %}
+                            <span class="text-muted">At state average</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
-            <!-- Comparison Charts -->
-            <div class="row">
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="fas fa-users me-2"></i>
-                                <span class="english-text">Employment Comparison</span>
-                                <span class="hindi-text">रोजगार तुलना</span>
-                                <span class="gujarati-text">રોજગાર તુલના</span>
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="employmentChart" width="400" height="300"></canvas>
-                        </div>
+            <!-- Persons Worked -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="comparison-card p-3 h-100">
+                    <h6 class="text-muted">Persons Worked</h6>
+                    <div class="metric-value text-primary">
+                        {{ comparison_data.district.persons_worked|format_number }}
                     </div>
-                </div>
-                
-                <div class="col-md-6 mb-4">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="fas fa-rupee-sign me-2"></i>
-                                <span class="english-text">Expenditure Efficiency</span>
-                                <span class="hindi-text">व्यय दक्षता</span>
-                                <span class="gujarati-text">ખર્ચ કાર્યક્ષમતા</span>
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="expenditureChart" width="400" height="300"></canvas>
-                        </div>
+                    <div class="text-muted small">
+                        State Avg: {{ comparison_data.state_avg.persons_worked|format_number }}
+                    </div>
+                    {% set persons_percentage = comparison_data.comparison_percentages.persons_worked %}
+                    <div class="mt-2">
+                        {% if persons_percentage > 0 %}
+                            <span class="positive"><i class="fas fa-arrow-up"></i> {{ persons_percentage }}% above average</span>
+                        {% elif persons_percentage < 0 %}
+                            <span class="negative"><i class="fas fa-arrow-down"></i> {{ persons_percentage|abs }}% below average</span>
+                        {% else %}
+                            <span class="text-muted">At state average</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
-            <!-- Performance Radar Chart -->
-            <div class="row mb-4">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h5 class="mb-0">
-                                <i class="fas fa-bullseye me-2"></i>
-                                <span class="english-text">Overall Performance Radar</span>
-                                <span class="hindi-text">समग्र प्रदर्शन रडार</span>
-                                <span class="gujarati-text">સમગ્ર પ્રદર્શન રડાર</span>
-                            </h5>
-                        </div>
-                        <div class="card-body">
-                            <canvas id="performanceRadarChart" width="400" height="300"></canvas>
-                        </div>
+            <!-- Total Person Days -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="comparison-card p-3 h-100">
+                    <h6 class="text-muted">Total Person Days</h6>
+                    <div class="metric-value text-primary">
+                        {{ comparison_data.district.total_person_days|format_number }}
+                    </div>
+                    <div class="text-muted small">
+                        State Avg: {{ comparison_data.state_avg.total_person_days|format_number }}
+                    </div>
+                    {% set days_percentage = comparison_data.comparison_percentages.total_person_days %}
+                    <div class="mt-2">
+                        {% if days_percentage > 0 %}
+                            <span class="positive"><i class="fas fa-arrow-up"></i> {{ days_percentage }}% above average</span>
+                        {% elif days_percentage < 0 %}
+                            <span class="negative"><i class="fas fa-arrow-down"></i> {{ days_percentage|abs }}% below average</span>
+                        {% else %}
+                            <span class="text-muted">At state average</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
 
-            <!-- Detailed Comparison Table -->
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">
-                        <i class="fas fa-table me-2"></i>
-                        <span class="english-text">Detailed Comparison</span>
-                        <span class="hindi-text">विस्तृत तुलना</span>
-                        <span class="gujarati-text">વિસ્તૃત તુલના</span>
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped table-hover">
-                            <thead class="table-dark">
-                                <tr>
-                                    <th>
-                                        <span class="english-text">Metric</span>
-                                        <span class="hindi-text">मैट्रिक</span>
-                                        <span class="gujarati-text">મેટ્રિક</span>
-                                    </th>
-                                    <th>
-                                        <span class="english-text">Your District</span>
-                                        <span class="hindi-text">आपका जिला</span>
-                                        <span class="gujarati-text">તમારો જિલ્લો</span>
-                                    </th>
-                                    <th>
-                                        <span class="english-text">State Average</span>
-                                        <span class="hindi-text">राज्य औसत</span>
-                                        <span class="gujarati-text">રાજ્ય સરેરાશ</span>
-                                    </th>
-                                    <th>
-                                        <span class="english-text">Difference</span>
-                                        <span class="hindi-text">अंतर</span>
-                                        <span class="gujarati-text">તફાવત</span>
-                                    </th>
-                                    <th>
-                                        <span class="english-text">Status</span>
-                                        <span class="hindi-text">स्थिति</span>
-                                        <span class="gujarati-text">સ્થિતિ</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% set district_data = comparison_data.district %}
-                                {% set state_avg = comparison_data.state_avg %}
-                                
-                                <!-- Households Employed -->
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <span class="english-text">Households Employed</span>
-                                            <span class="hindi-text">रोजगारित परिवार</span>
-                                            <span class="gujarati-text">રોજગારી મળેલા ઘરગથ્થુઓ</span>
-                                        </strong>
-                                    </td>
-                                    <td>{{ district_data.households_provided_employment|default(0)|format_number }}</td>
-                                    <td>{{ state_avg.households_provided_employment|default(0)|format_number }}</td>
-                                    <td class="{% if (district_data.households_provided_employment|default(0)) > (state_avg.households_provided_employment|default(0)) %}text-success{% else %}text-danger{% endif %}">
-                                        {% if state_avg.households_provided_employment is defined and state_avg.households_provided_employment|default(0) > 0 %}
-                                            {% set diff = ((district_data.households_provided_employment|default(0) - state_avg.households_provided_employment|default(0)) / state_avg.households_provided_employment|default(1) * 100) %}
-                                            {{ diff|round(1) }}%
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% if (district_data.households_provided_employment|default(0)) > (state_avg.households_provided_employment|default(0)) %}
-                                            <span class="badge bg-success">
-                                                <span class="english-text">Above Avg</span>
-                                                <span class="hindi-text">औसत से ऊपर</span>
-                                                <span class="gujarati-text">સરેરાશથી ઉપર</span>
-                                            </span>
-                                        {% elif (district_data.households_provided_employment|default(0)) == (state_avg.households_provided_employment|default(0)) %}
-                                            <span class="badge bg-secondary">
-                                                <span class="english-text">Equal Avg</span>
-                                                <span class="hindi-text">औसत के बराबर</span>
-                                                <span class="gujarati-text">સરેરાશ બરાબર</span>
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-danger">
-                                                <span class="english-text">Below Avg</span>
-                                                <span class="hindi-text">औसत से नीचे</span>
-                                                <span class="gujarati-text">સરેરાશથી નીચે</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                
-                                <!-- Women Participation -->
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <span class="english-text">Women Participation</span>
-                                            <span class="hindi-text">महिला भागीदारी</span>
-                                            <span class="gujarati-text">મહિલા ભાગીદારી</span>
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        {% if district_data.total_person_days is defined and district_data.total_person_days|default(0) > 0 %}
-                                            {{ ((district_data.women_person_days|default(0) / district_data.total_person_days|default(1) * 100))|round(1) }}%
-                                        {% else %}
-                                            0%
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ state_avg.women_participation_rate|default(0)|round(1) }}%</td>
-                                    <td class="{% if ((district_data.women_person_days|default(0) / (district_data.total_person_days|default(1)) * 100)) > (state_avg.women_participation_rate|default(0)) %}text-success{% else %}text-danger{% endif %}">
-                                        {% if state_avg.women_participation_rate is defined and state_avg.women_participation_rate|default(0) > 0 %}
-                                            {% set women_rate = (district_data.women_person_days|default(0) / (district_data.total_person_days|default(1)) * 100) %}
-                                            {% set diff = ((women_rate - state_avg.women_participation_rate|default(0)) / state_avg.women_participation_rate|default(1) * 100) %}
-                                            {{ diff|round(1) }}%
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set women_rate = (district_data.women_person_days|default(0) / (district_data.total_person_days|default(1)) * 100) %}
-                                        {% if women_rate > (state_avg.women_participation_rate|default(0)) %}
-                                            <span class="badge bg-success">
-                                                <span class="english-text">Above Avg</span>
-                                                <span class="hindi-text">औसत से ऊपर</span>
-                                                <span class="gujarati-text">સરેરાશથી ઉપર</span>
-                                            </span>
-                                        {% elif women_rate == (state_avg.women_participation_rate|default(0)) %}
-                                            <span class="badge bg-secondary">
-                                                <span class="english-text">Equal Avg</span>
-                                                <span class="hindi-text">औसत के बराबर</span>
-                                                <span class="gujarati-text">સરેરાશ બરાબર</span>
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-danger">
-                                                <span class="english-text">Below Avg</span>
-                                                <span class="hindi-text">औसत से नीचे</span>
-                                                <span class="gujarati-text">સરેરાશથી નીચે</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                
-                                <!-- Works Completion -->
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <span class="english-text">Works Completion</span>
-                                            <span class="hindi-text">कार्य पूर्णता</span>
-                                            <span class="gujarati-text">કામ પૂર્ણતા</span>
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        {% if district_data.works_taken_up is defined and district_data.works_taken_up|default(0) > 0 %}
-                                            {{ ((district_data.works_completed|default(0) / district_data.works_taken_up|default(1) * 100))|round(1) }}%
-                                        {% else %}
-                                            0%
-                                        {% endif %}
-                                    </td>
-                                    <td>{{ state_avg.works_completion_rate|default(0)|round(1) }}%</td>
-                                    <td class="{% if ((district_data.works_completed|default(0) / (district_data.works_taken_up|default(1)) * 100)) > (state_avg.works_completion_rate|default(0)) %}text-success{% else %}text-danger{% endif %}">
-                                        {% if state_avg.works_completion_rate is defined and state_avg.works_completion_rate|default(0) > 0 %}
-                                            {% set completion_rate = (district_data.works_completed|default(0) / (district_data.works_taken_up|default(1)) * 100) %}
-                                            {% set diff = ((completion_rate - state_avg.works_completion_rate|default(0)) / state_avg.works_completion_rate|default(1) * 100) %}
-                                            {{ diff|round(1) }}%
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set completion_rate = (district_data.works_completed|default(0) / (district_data.works_taken_up|default(1)) * 100) %}
-                                        {% if completion_rate > (state_avg.works_completion_rate|default(0)) %}
-                                            <span class="badge bg-success">
-                                                <span class="english-text">Above Avg</span>
-                                                <span class="hindi-text">औसत से ऊपर</span>
-                                                <span class="gujarati-text">સરેરાશથી ઉપર</span>
-                                            </span>
-                                        {% elif completion_rate == (state_avg.works_completion_rate|default(0)) %}
-                                            <span class="badge bg-secondary">
-                                                <span class="english-text">Equal Avg</span>
-                                                <span class="hindi-text">औसत के बराबर</span>
-                                                <span class="gujarati-text">સરેરાશ બરાબર</span>
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-danger">
-                                                <span class="english-text">Below Avg</span>
-                                                <span class="hindi-text">औसत से नीचे</span>
-                                                <span class="gujarati-text">સરેરાશથી નીચે</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                
-                                <!-- Expenditure per Person -->
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <span class="english-text">Expenditure per Person</span>
-                                            <span class="hindi-text">प्रति व्यक्ति व्यय</span>
-                                            <span class="gujarati-text">પ્રતિ વ્યક્તિ ખર્ચ</span>
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        {% if district_data.persons_worked is defined and district_data.persons_worked|default(0) > 0 %}
-                                            ₹{{ (district_data.total_expenditure|default(0) / district_data.persons_worked|default(1))|round|int }}
-                                        {% else %}
-                                            ₹0
-                                        {% endif %}
-                                    </td>
-                                    <td>₹{{ state_avg.expenditure_per_person|default(0)|round|int }}</td>
-                                    <td class="{% if ((district_data.total_expenditure|default(0) / (district_data.persons_worked|default(1))) < (state_avg.expenditure_per_person|default(0))) %}text-success{% else %}text-danger{% endif %}">
-                                        {% if state_avg.expenditure_per_person is defined and state_avg.expenditure_per_person|default(0) > 0 %}
-                                            {% set exp_per_person = (district_data.total_expenditure|default(0) / (district_data.persons_worked|default(1))) %}
-                                            {% set diff = ((exp_per_person - state_avg.expenditure_per_person|default(0)) / state_avg.expenditure_per_person|default(1) * 100) %}
-                                            {{ diff|round(1) }}%
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set exp_per_person = (district_data.total_expenditure|default(0) / (district_data.persons_worked|default(1))) %}
-                                        {% if exp_per_person < (state_avg.expenditure_per_person|default(0)) %}
-                                            <span class="badge bg-success">
-                                                <span class="english-text">Cost Effective</span>
-                                                <span class="hindi-text">लागत प्रभावी</span>
-                                                <span class="gujarati-text">ખર્ચ અસરકારક</span>
-                                            </span>
-                                        {% elif exp_per_person == (state_avg.expenditure_per_person|default(0)) %}
-                                            <span class="badge bg-secondary">
-                                                <span class="english-text">Equal Avg</span>
-                                                <span class="hindi-text">औसत के बराबर</span>
-                                                <span class="gujarati-text">સરેરાશ બરાબર</span>
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-warning">
-                                                <span class="english-text">Higher Cost</span>
-                                                <span class="hindi-text">उच्च लागत</span>
-                                                <span class="gujarati-text">ઉચ્ચ ખર્ચ</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                
-                                <!-- SC/ST Participation -->
-                                <tr>
-                                    <td>
-                                        <strong>
-                                            <span class="english-text">SC/ST Participation</span>
-                                            <span class="hindi-text">अनुसूचित जाति/जनजाति भागीदारी</span>
-                                            <span class="gujarati-text">અનુસૂચિત જાતિ/જનજાતિ ભાગીદારી</span>
-                                        </strong>
-                                    </td>
-                                    <td>
-                                        {% if district_data.total_person_days is defined and district_data.total_person_days|default(0) > 0 %}
-                                            {% set sc_st_total = (district_data.sc_person_days|default(0)) + (district_data.st_person_days|default(0)) %}
-                                            {{ ((sc_st_total / district_data.total_person_days|default(1) * 100))|round(1) }}%
-                                        {% else %}
-                                            0%
-                                        {% endif %}
-                                    </td>
-                                    <td>55.3%</td>
-                                    <td class="{% if district_data.total_person_days and district_data.total_person_days > 0 and ((district_data.sc_person_days|default(0) + district_data.st_person_days|default(0)) / district_data.total_person_days * 100) > 55.3 %}text-success{% else %}text-danger{% endif %}">
-                                        {% if district_data.total_person_days is defined and district_data.total_person_days|default(0) > 0 %}
-                                            {% set sc_st_rate = ((district_data.sc_person_days|default(0) + district_data.st_person_days|default(0)) / district_data.total_person_days|default(1) * 100) %}
-                                            {% set diff = ((sc_st_rate - 55.3) / 55.3 * 100) %}
-                                            {{ diff|round(1) }}%
-                                        {% else %}
-                                            N/A
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% set sc_st_rate = ((district_data.sc_person_days|default(0) + district_data.st_person_days|default(0)) / (district_data.total_person_days|default(1)) * 100) %}
-                                        {% if sc_st_rate > 55.3 %}
-                                            <span class="badge bg-success">
-                                                <span class="english-text">Inclusive</span>
-                                                <span class="hindi-text">समावेशी</span>
-                                                <span class="gujarati-text">સમાવેશક</span>
-                                            </span>
-                                        {% elif sc_st_rate == 55.3 %}
-                                            <span class="badge bg-secondary">
-                                                <span class="english-text">Equal Avg</span>
-                                                <span class="hindi-text">औसत के बराबर</span>
-                                                <span class="gujarati-text">સરેરાશ બરાબર</span>
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-warning">
-                                                <span class="english-text">Needs Focus</span>
-                                                <span class="hindi-text">फोकस की आवश्यकता</span>
-                                                <span class="gujarati-text">ફોકસ જરૂરી</span>
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            <!-- Works Completed -->
+            <div class="col-md-6 col-lg-3 mb-4">
+                <div class="comparison-card p-3 h-100">
+                    <h6 class="text-muted">Works Completed</h6>
+                    <div class="metric-value text-primary">
+                        {{ comparison_data.district.works_completed|format_number }}
+                    </div>
+                    <div class="text-muted small">
+                        State Avg: {{ comparison_data.state_avg.works_completed|format_number }}
+                    </div>
+                    {% set works_percentage = comparison_data.comparison_percentages.works_completed %}
+                    <div class="mt-2">
+                        {% if works_percentage > 0 %}
+                            <span class="positive"><i class="fas fa-arrow-up"></i> {{ works_percentage }}% above average</span>
+                        {% elif works_percentage < 0 %}
+                            <span class="negative"><i class="fas fa-arrow-down"></i> {{ works_percentage|abs }}% below average</span>
+                        {% else %}
+                            <span class="text-muted">At state average</span>
+                        {% endif %}
                     </div>
                 </div>
             </div>
+        </div>
 
-        {% else %}
-            <div class="alert alert-warning text-center">
-                <i class="fas fa-exclamation-triangle me-2"></i>
-                <span class="english-text">No comparison data available for this district.</span>
-                <span class="hindi-text">इस जिले के लिए कोई तुलना डेटा उपलब्ध नहीं है।</span>
-                <span class="gujarati-text">આ જિલ્લા માટે કોઈ તુલના ડેટા ઉપલબ્ધ નથી.</span>
+        <!-- Detailed Comparison Section -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-chart-bar"></i> Detailed Performance Comparison
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Metric</th>
+                                        <th>District Performance</th>
+                                        <th>State Average</th>
+                                        <th>Comparison</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Women Participation -->
+                                    <tr>
+                                        <td>Women Participation Rate</td>
+                                        <td>
+                                            {% set women_district = (comparison_data.district.women_person_days / comparison_data.district.total_person_days * 100)|round(1) %}
+                                            {{ women_district }}%
+                                        </td>
+                                        <td>{{ comparison_data.state_avg.women_participation_rate }}%</td>
+                                        <td>
+                                            {% set women_diff = women_district - comparison_data.state_avg.women_participation_rate %}
+                                            {% if women_diff > 0 %}
+                                                <span class="positive">+{{ women_diff }}%</span>
+                                            {% elif women_diff < 0 %}
+                                                <span class="negative">{{ women_diff }}%</span>
+                                            {% else %}
+                                                <span class="text-muted">0%</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if women_diff > 2 %}
+                                                <span class="badge bg-success">Better</span>
+                                            {% elif women_diff < -2 %}
+                                                <span class="badge bg-danger">Needs Improvement</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Average</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <!-- Works Completion Rate -->
+                                    <tr>
+                                        <td>Works Completion Rate</td>
+                                        <td>
+                                            {% set completion_district = (comparison_data.district.works_completed / comparison_data.district.works_taken_up * 100)|round(1) %}
+                                            {{ completion_district }}%
+                                        </td>
+                                        <td>{{ comparison_data.state_avg.works_completion_rate }}%</td>
+                                        <td>
+                                            {% set completion_diff = completion_district - comparison_data.state_avg.works_completion_rate %}
+                                            {% if completion_diff > 0 %}
+                                                <span class="positive">+{{ completion_diff }}%</span>
+                                            {% elif completion_diff < 0 %}
+                                                <span class="negative">{{ completion_diff }}%</span>
+                                            {% else %}
+                                                <span class="text-muted">0%</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if completion_diff > 5 %}
+                                                <span class="badge bg-success">Excellent</span>
+                                            {% elif completion_diff > 0 %}
+                                                <span class="badge bg-success">Good</span>
+                                            {% elif completion_diff < -5 %}
+                                                <span class="badge bg-danger">Poor</span>
+                                            {% else %}
+                                                <span class="badge bg-warning">Average</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <!-- Expenditure per Person -->
+                                    <tr>
+                                        <td>Expenditure per Person (₹)</td>
+                                        <td>
+                                            {% set exp_per_person = (comparison_data.district.total_expenditure / comparison_data.district.persons_worked)|round(0) %}
+                                            ₹{{ exp_per_person|format_number }}
+                                        </td>
+                                        <td>₹{{ comparison_data.state_avg.expenditure_per_person|format_number }}</td>
+                                        <td>
+                                            {% set exp_diff = ((exp_per_person - comparison_data.state_avg.expenditure_per_person) / comparison_data.state_avg.expenditure_per_person * 100)|round(1) %}
+                                            {% if exp_diff > 0 %}
+                                                <span class="positive">+{{ exp_diff }}%</span>
+                                            {% elif exp_diff < 0 %}
+                                                <span class="negative">{{ exp_diff }}%</span>
+                                            {% else %}
+                                                <span class="text-muted">0%</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if exp_diff > 10 %}
+                                                <span class="badge bg-warning">High Cost</span>
+                                            {% elif exp_diff < -10 %}
+                                                <span class="badge bg-info">Cost Effective</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Normal</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+
+                                    <!-- Average Days per Household -->
+                                    <tr>
+                                        <td>Average Days per Household</td>
+                                        <td>{{ comparison_data.district.avg_days_per_household|round(1) }} days</td>
+                                        <td>
+                                            {% if comparison_data.state_avg.avg_days_per_household %}
+                                                {{ comparison_data.state_avg.avg_days_per_household }} days
+                                            {% else %}
+                                                48.7 days
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% set state_avg_days = comparison_data.state_avg.avg_days_per_household or 48.7 %}
+                                            {% set days_diff = comparison_data.district.avg_days_per_household - state_avg_days %}
+                                            {% if days_diff > 0 %}
+                                                <span class="positive">+{{ days_diff|round(1) }} days</span>
+                                            {% elif days_diff < 0 %}
+                                                <span class="negative">{{ days_diff|round(1) }} days</span>
+                                            {% else %}
+                                                <span class="text-muted">Same</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if days_diff > 5 %}
+                                                <span class="badge bg-success">More Employment</span>
+                                            {% elif days_diff < -5 %}
+                                                <span class="badge bg-danger">Less Employment</span>
+                                            {% else %}
+                                                <span class="badge bg-secondary">Normal</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
-        {% endif %}
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="row mt-4">
+            <div class="col-12 text-center">
+                <a href="/dashboard?district={{ district_info.district_code }}" class="btn btn-primary me-2">
+                    <i class="fas fa-tachometer-alt"></i> Back to Dashboard
+                </a>
+                <a href="/" class="btn btn-outline-secondary">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
     </div>
-</div>
-{% endblock %}
 
-{% block scripts %}
-<script>
-function updateComparison() {
-    const compareWith = document.getElementById('compareWith').value;
-    window.location.href = `/comparison?district={{ district_info[0]|default('') }}&compare_with=${compareWith}`;
-}
+    <footer class="bg-dark text-white mt-5 py-4">
+        <div class="container text-center">
+            <p class="mb-0">MGNREGA Gujarat Analytics &copy; 2024</p>
+        </div>
+    </footer>
 
-// Initialize charts when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    {% if comparison_data and comparison_data.district and comparison_data.state_avg %}
-        // Pass data from template to JavaScript
-        const districtData = {
-            households_provided_employment: {{ comparison_data.district.households_provided_employment|default(0) }},
-            persons_worked: {{ comparison_data.district.persons_worked|default(0) }},
-            total_person_days: {{ comparison_data.district.total_person_days|default(0) }},
-            women_person_days: {{ comparison_data.district.women_person_days|default(0) }},
-            works_completed: {{ comparison_data.district.works_completed|default(0) }},
-            works_taken_up: {{ comparison_data.district.works_taken_up|default(0) }},
-            total_expenditure: {{ comparison_data.district.total_expenditure|default(0) }},
-            sc_person_days: {{ comparison_data.district.sc_person_days|default(0) }},
-            st_person_days: {{ comparison_data.district.st_person_days|default(0) }}
-        };
-
-        const stateAvg = {
-            households_provided_employment: {{ comparison_data.state_avg.households_provided_employment|default(0) }},
-            persons_worked: {{ comparison_data.state_avg.persons_worked|default(0) }},
-            total_person_days: {{ comparison_data.state_avg.total_person_days|default(0) }},
-            women_participation_rate: {{ comparison_data.state_avg.women_participation_rate|default(0) }},
-            works_completion_rate: {{ comparison_data.state_avg.works_completion_rate|default(0) }},
-            expenditure_per_person: {{ comparison_data.state_avg.expenditure_per_person|default(0) }}
-        };
-
-        // Employment Comparison Chart
-        const employmentCtx = document.getElementById('employmentChart');
-        if (employmentCtx) {
-            new Chart(employmentCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: [
-                        'Households',
-                        'Persons', 
-                        'Person Days'
-                    ],
-                    datasets: [
-                        {
-                            label: 'Your District',
-                            data: [
-                                districtData.households_provided_employment,
-                                districtData.persons_worked,
-                                districtData.total_person_days
-                            ],
-                            backgroundColor: '#2c5aa0',
-                            borderColor: '#2c5aa0',
-                            borderWidth: 1
-                        },
-                        {
-                            label: 'State Avg',
-                            data: [
-                                stateAvg.households_provided_employment,
-                                stateAvg.persons_worked,
-                                stateAvg.total_person_days
-                            ],
-                            backgroundColor: '#34a853',
-                            borderColor: '#34a853',
-                            borderWidth: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                            labels: {
-                                padding: 20,
-                                font: {
-                                    size: 12
-                                }
-                            }
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const value = context.raw;
-                                    if (value >= 1000000) {
-                                        return `${context.dataset.label}: ${(value / 1000000).toFixed(2)}M`;
-                                    } else if (value >= 1000) {
-                                        return `${context.dataset.label}: ${(value / 1000).toFixed(1)}K`;
-                                    }
-                                    return `${context.dataset.label}: ${value}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    if (value >= 1000000) {
-                                        return (value / 1000000).toFixed(1) + 'M';
-                                    } else if (value >= 1000) {
-                                        return (value / 1000).toFixed(0) + 'K';
-                                    }
-                                    return value;
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Expenditure Efficiency Chart
-        const expenditureCtx = document.getElementById('expenditureChart');
-        if (expenditureCtx) {
-            const districtExpPerPerson = districtData.persons_worked > 0 ? 
-                districtData.total_expenditure / districtData.persons_worked : 0;
-            
-            new Chart(expenditureCtx.getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: ['Expenditure per Person'],
-                    datasets: [
-                        {
-                            label: 'Your District',
-                            data: [districtExpPerPerson],
-                            backgroundColor: '#2c5aa0'
-                        },
-                        {
-                            label: 'State Average',
-                            data: [stateAvg.expenditure_per_person],
-                            backgroundColor: '#34a853'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    return `${context.dataset.label}: ₹${context.raw.toLocaleString()}`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Rupees (₹)'
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Performance Radar Chart
-        const radarCtx = document.getElementById('performanceRadarChart');
-        if (radarCtx) {
-            // Calculate performance metrics (0-100 scale)
-            const employmentScore = stateAvg.households_provided_employment > 0 ? 
-                Math.min(100, (districtData.households_provided_employment / stateAvg.households_provided_employment * 100)) : 0;
-            
-            const womenParticipation = districtData.total_person_days > 0 ? 
-                (districtData.women_person_days / districtData.total_person_days * 100) : 0;
-            const womenScore = stateAvg.women_participation_rate > 0 ? 
-                Math.min(100, (womenParticipation / stateAvg.women_participation_rate * 100)) : 0;
-            
-            const completionRate = districtData.works_taken_up > 0 ? 
-                (districtData.works_completed / districtData.works_taken_up * 100) : 0;
-            const completionScore = stateAvg.works_completion_rate > 0 ? 
-                Math.min(100, (completionRate / stateAvg.works_completion_rate * 100)) : 0;
-            
-            const districtExpPerPerson = districtData.persons_worked > 0 ? 
-                districtData.total_expenditure / districtData.persons_worked : 0;
-            const costScore = districtExpPerPerson > 0 ? 
-                Math.min(100, (stateAvg.expenditure_per_person / districtExpPerPerson * 100)) : 0;
-            
-            const scstTotal = districtData.sc_person_days + districtData.st_person_days;
-            const scstRate = districtData.total_person_days > 0 ? 
-                (scstTotal / districtData.total_person_days * 100) : 0;
-            const scstScore = Math.min(100, (scstRate / 55.3 * 100));
-            
-            new Chart(radarCtx.getContext('2d'), {
-                type: 'radar',
-                data: {
-                    labels: [
-                        'Employment',
-                        'Women Part.',
-                        'Works Comp.',
-                        'Cost Eff.',
-                        'SC/ST Part.'
-                    ],
-                    datasets: [
-                        {
-                            label: 'Your District',
-                            data: [employmentScore, womenScore, completionScore, costScore, scstScore],
-                            backgroundColor: 'rgba(44, 90, 160, 0.2)',
-                            borderColor: '#2c5aa0',
-                            pointBackgroundColor: '#2c5aa0',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#2c5aa0'
-                        },
-                        {
-                            label: 'State Average',
-                            data: [100, 100, 100, 100, 100],
-                            backgroundColor: 'rgba(52, 168, 83, 0.2)',
-                            borderColor: '#34a853',
-                            pointBackgroundColor: '#34a853',
-                            pointBorderColor: '#fff',
-                            pointHoverBackgroundColor: '#fff',
-                            pointHoverBorderColor: '#34a853'
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        r: {
-                            beginAtZero: true,
-                            max: 100,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + '%';
-                                }
-                            }
-                        }
-                    }
-                }
-            });
-        }
-    {% endif %}
-});
-</script>
-{% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

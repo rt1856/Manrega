@@ -7,19 +7,29 @@
             <div class="card-header bg-danger text-white">
                 <h4 class="mb-0">
                     <i class="fas fa-exclamation-triangle me-2"></i>
-                    <span class="english-text">Error</span>
-                    <span class="hindi-text">त्रुटि</span>
+                    <span class="lang-en">Error</span>
+                    <span class="lang-hi">त्रुटि</span>
+                    <span class="lang-gu">ભૂલ</span>
                 </h4>
             </div>
             <div class="card-body text-center py-5">
                 <i class="fas fa-times-circle fa-4x text-danger mb-4"></i>
-                <h5 class="english-text">{{ message }}</h5>
-                <h6 class="hindi-text text-muted">{{ hindi_message }}</h6>
+                <h5 class="lang-en">{{ message }}</h5>
+                <h5 class="lang-hi">{{ hindi_message }}</h5>
+                <h5 class="lang-gu">{{ gujarati_message }}</h5>
+                
                 <div class="mt-4">
-                    <a href="/" class="btn btn-primary">
+                    <a href="/" class="btn btn-primary me-2">
                         <i class="fas fa-home me-2"></i>
-                        <span class="english-text">Go Home</span>
-                        <span class="hindi-text">होम पर जाएं</span>
+                        <span class="lang-en">Go Home</span>
+                        <span class="lang-hi">होम पर जाएं</span>
+                        <span class="lang-gu">હોમ પર જાઓ</span>
+                    </a>
+                    <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>
+                        <span class="lang-en">Go Back</span>
+                        <span class="lang-hi">वापस जाएं</span>
+                        <span class="lang-gu">પાછા જાઓ</span>
                     </a>
                 </div>
             </div>

@@ -4,21 +4,21 @@
 <div class="row justify-content-center">
     <div class="col-lg-10">
         <!-- Hero Section -->
-        <div class="card hero-card mb-5">
-            <div class="card-body text-center py-5">
-                <h1 class="display-4 text-primary mb-3">
+        <div class="card hero-card mb-5 border-0 shadow-lg">
+            <div class="card-body text-center py-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <h1 class="display-4 mb-3">
                     <i class="fas fa-hands-helping me-3"></i>
-                    <span class="english-text">MGNREGA Gujarat Dashboard</span>
+                    <span class="lang-en">MGNREGA Gujarat Dashboard</span>
                 </h1>
-                <h2 class="hindi-text h3 text-secondary mb-2">मनरेगा गुजरात डैशबोर्ड</h2>
-                <h2 class="gujarati-text h3 text-secondary mb-4">મનરેગા ગુજરાત ડેશબોર્ડ</h2>
-                <p class="lead english-text">
+                <h2 class="lang-hi h3 mb-2">मनरेगा गुजरात डैशबोर्ड</h2>
+                <h2 class="lang-gu h3 mb-4">મનરેગા ગુજરાત ડેશબોર્ડ</h2>
+                <p class="lead lang-en">
                     Track your district's MGNREGA performance in simple, understandable terms
                 </p>
-                <p class="hindi-text lead">
+                <p class="lead lang-hi">
                     अपने जिले के मनरेगा प्रदर्शन को सरल, समझने योग्य शब्दों में ट्रैक करें
                 </p>
-                <p class="gujarati-text lead">
+                <p class="lead lang-gu">
                     તમારા જિલ્લાના મનરેગા પ્રદર્શનને સરળ, સમજી શકાય તેવા શબ્દોમાં ટ્રૅક કરો
                 </p>
             </div>
@@ -29,9 +29,9 @@
             <div class="card-header bg-success text-white py-3">
                 <h4 class="mb-0">
                     <i class="fas fa-map-marker-alt me-2"></i>
-                    <span class="english-text">Select Your District</span>
-                    <span class="hindi-text">अपना जिला चुनें</span>
-                    <span class="gujarati-text">તમારો જિલ્લો પસંદ કરો</span>
+                    <span class="lang-en">Select Your District</span>
+                    <span class="lang-hi">अपना जिला चुनें</span>
+                    <span class="lang-gu">તમારો જિલ્લો પસંદ કરો</span>
                 </h4>
             </div>
             <div class="card-body p-4">
@@ -40,11 +40,13 @@
                     <div class="col-12">
                         <button id="detectLocation" class="btn btn-outline-primary btn-lg w-100 mb-3">
                             <i class="fas fa-location-arrow me-2"></i>
-                            <span class="english-text">Auto Detect My District</span>
-                            <span class="hindi-text">मेरा जिला स्वचालित पहचानें</span>
-                            <span class="gujarati-text">મારો જિલ્લો સ્વચાલિત ઓળખો</span>
+                            <span class="lang-en">Auto Detect My District</span>
+                            <span class="lang-hi">मेरा जिला स्वचालित पहचानें</span>
+                            <span class="lang-gu">મારો જિલ્લો સ્વચાલિત ઓળખો</span>
                         </button>
-                        <div id="locationResult" class="alert alert-info d-none text-center"></div>
+                        <div id="locationResult" class="alert alert-info d-none text-center">
+                            <!-- Location detection result will appear here -->
+                        </div>
                     </div>
                 </div>
 
@@ -54,14 +56,20 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label for="district" class="form-label h5">
-                                    <span class="english-text">Select District</span>
-                                    <span class="hindi-text">जिला चुनें</span>
-                                    <span class="gujarati-text">જિલ્લો પસંદ કરો</span>
+                                    <span class="lang-en">Select District</span>
+                                    <span class="lang-hi">जिला चुनें</span>
+                                    <span class="lang-gu">જિલ્લો પસંદ કરો</span>
                                 </label>
                                 <select class="form-select form-select-lg" id="district" name="district" required>
-                                    <option value="">-- Select District -- जिला चुनें -- જિલ્લો પસંદ કરો --</option>
+                                    <option value="">
+                                        <span class="lang-en">-- Select District --</span>
+                                        <span class="lang-hi">-- जिला चुनें --</span>
+                                        <span class="lang-gu">-- જિલ્લો પસંદ કરો --</span>
+                                    </option>
                                     {% for code, name, name_hindi, name_gujarati in districts %}
-                                        <option value="{{ code }}">{{ name }} - {{ name_hindi }} - {{ name_gujarati }}</option>
+                                        <option value="{{ code }}">
+                                            {{ name }} - {{ name_hindi }} - {{ name_gujarati }}
+                                        </option>
                                     {% endfor %}
                                 </select>
                             </div>
@@ -70,9 +78,9 @@
                         <div class="col-md-3">
                             <div class="mb-4">
                                 <label for="year" class="form-label h5">
-                                    <span class="english-text">Year</span>
-                                    <span class="hindi-text">वर्ष</span>
-                                    <span class="gujarati-text">વર્ષ</span>
+                                    <span class="lang-en">Year</span>
+                                    <span class="lang-hi">वर्ष</span>
+                                    <span class="lang-gu">વર્ષ</span>
                                 </label>
                                 <select class="form-select form-select-lg" id="year" name="year">
                                     {% for y in range(2020, 2026) %}
@@ -85,14 +93,20 @@
                         <div class="col-md-3">
                             <div class="mb-4">
                                 <label for="month" class="form-label h5">
-                                    <span class="english-text">Month</span>
-                                    <span class="hindi-text">महीना</span>
-                                    <span class="gujarati-text">મહિનો</span>
+                                    <span class="lang-en">Month</span>
+                                    <span class="lang-hi">महीना</span>
+                                    <span class="lang-gu">મહિનો</span>
                                 </label>
                                 <select class="form-select form-select-lg" id="month" name="month">
                                     {% for m in range(1, 13) %}
-                                        <option value="{{ m }}" {% if m == 6 %}selected{% endif %}>
-                                            {{ m|get_month_name }}
+                                        <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>
+                                            {% if current_language == 'en' %}
+                                                {{ m|get_month_name }}
+                                            {% elif current_language == 'hi' %}
+                                                {{ m|get_month_name_hindi }}
+                                            {% else %}
+                                                {{ m|get_month_name_gujarati }}
+                                            {% endif %}
                                         </option>
                                     {% endfor %}
                                 </select>
@@ -102,9 +116,9 @@
 
                     <button type="submit" class="btn btn-primary btn-lg w-100 py-3">
                         <i class="fas fa-chart-bar me-2"></i>
-                        <span class="english-text">View District Performance</span>
-                        <span class="hindi-text">जिला प्रदर्शन देखें</span>
-                        <span class="gujarati-text">જિલ્લો પ્રદર્શન જુઓ</span>
+                        <span class="lang-en">View District Performance</span>
+                        <span class="lang-hi">जिला प्रदर्शन देखें</span>
+                        <span class="lang-gu">જિલ્લો પ્રદર્શન જુઓ</span>
                     </button>
                 </form>
             </div>
@@ -113,47 +127,415 @@
         <!-- Information Cards -->
         <div class="row mt-5">
             <div class="col-md-4 mb-4">
-                <div class="card h-100 info-card">
+                <div class="card h-100 info-card shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-users fa-3x text-primary mb-3"></i>
-                        <h5 class="english-text">12.15 Crore Beneficiaries</h5>
-                        <h6 class="hindi-text">12.15 करोड़ लाभार्थी</h6>
-                        <h6 class="gujarati-text">12.15 કરોડ લાભાર્થીઓ</h6>
-                        <p class="text-muted small english-text">Across India in 2025</p>
-                        <p class="text-muted small hindi-text">2025 में पूरे भारत में</p>
-                        <p class="text-muted small gujarati-text">2025માં સમગ્ર ભારતમાં</p>
+                        <h5 class="lang-en">12.15 Crore Beneficiaries</h5>
+                        <h6 class="lang-hi">12.15 करोड़ लाभार्थी</h6>
+                        <h6 class="lang-gu">12.15 કરોડ લાભાર્થીઓ</h6>
+                        <p class="text-muted small lang-en">Across India in 2025</p>
+                        <p class="text-muted small lang-hi">2025 में पूरे भारत में</p>
+                        <p class="text-muted small lang-gu">2025માં સમગ્ર ભારતમાં</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
-                <div class="card h-100 info-card">
+                <div class="card h-100 info-card shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-rupee-sign fa-3x text-success mb-3"></i>
-                        <h5 class="english-text">100 Days Employment</h5>
-                        <h6 class="hindi-text">100 दिन रोजगार</h6>
-                        <h6 class="gujarati-text">100 દિવસ રોજગાર</h6>
-                        <p class="text-muted small english-text">Guaranteed per household</p>
-                        <p class="text-muted small hindi-text">प्रति परिवार गारंटीकृत</p>
-                        <p class="text-muted small gujarati-text">પ્રતિ ઘરગથ્થુ ગેરંટીડ</p>
+                        <h5 class="lang-en">100 Days Employment</h5>
+                        <h6 class="lang-hi">100 दिन रोजगार</h6>
+                        <h6 class="lang-gu">100 દિવસ રોજગાર</h6>
+                        <p class="text-muted small lang-en">Guaranteed per household</p>
+                        <p class="text-muted small lang-hi">प्रति परिवार गारंटीकृत</p>
+                        <p class="text-muted small lang-gu">પ્રતિ ઘરગથ્થુ ગેરંટીડ</p>
                     </div>
                 </div>
             </div>
             
             <div class="col-md-4 mb-4">
-                <div class="card h-100 info-card">
+                <div class="card h-100 info-card shadow-sm">
                     <div class="card-body text-center">
                         <i class="fas fa-female fa-3x text-warning mb-3"></i>
-                        <h5 class="english-text">Women Empowerment</h5>
-                        <h6 class="hindi-text">महिला सशक्तिकरण</h6>
-                        <h6 class="gujarati-text">મહિલા સશક્તિકરણ</h6>
-                        <p class="text-muted small english-text">33% participation ensured</p>
-                        <p class="text-muted small hindi-text">33% भागीदारी सुनिश्चित</p>
-                        <p class="text-muted small gujarati-text">33% ભાગીદારી ખાતરી</p>
+                        <h5 class="lang-en">Women Empowerment</h5>
+                        <h6 class="lang-hi">महिला सशक्तिकरण</h6>
+                        <h6 class="lang-gu">મહિલા સશક્તિકરણ</h6>
+                        <p class="text-muted small lang-en">33% participation ensured</p>
+                        <p class="text-muted small lang-hi">33% भागीदारी सुनिश्चित</p>
+                        <p class="text-muted small lang-gu">33% ભાગીદારી ખાતરી</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Stats Section -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-chart-pie me-2"></i>
+                            <span class="lang-en">Quick Statistics</span>
+                            <span class="lang-hi">त्वरित आंकड़े</span>
+                            <span class="lang-gu">ઝડપી આંકડા</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3 mb-3">
+                                <h4 class="text-primary">33</h4>
+                                <p class="lang-en">Districts Covered</p>
+                                <p class="lang-hi">कवर किए गए जिले</p>
+                                <p class="lang-gu">કવર કરેલા જિલ્લાઓ</p>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <h4 class="text-success">98%</h4>
+                                <p class="lang-en">Data Accuracy</p>
+                                <p class="lang-hi">डेटा सटीकता</p>
+                                <p class="lang-gu">ડેટા ચોકસાઈ</p>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <h4 class="text-warning">24/7</h4>
+                                <p class="lang-en">Live Updates</p>
+                                <p class="lang-hi">लाइव अपडेट</p>
+                                <p class="lang-gu">લાઈવ અપડેટ્સ</p>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <h4 class="text-danger">100%</h4>
+                                <p class="lang-en">Free Service</p>
+                                <p class="lang-hi">मुफ्त सेवा</p>
+                                <p class="lang-gu">મફત સેવા</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+.hero-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+}
+
+.info-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+    border-radius: 10px;
+}
+
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.btn-lg {
+    border-radius: 10px;
+}
+
+.form-select-lg {
+    border-radius: 8px;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize location detection
+    const detectBtn = document.getElementById('detectLocation');
+    const locationResult = document.getElementById('locationResult');
+    const districtSelect = document.getElementById('district');
+    
+    if (detectBtn) {
+        detectBtn.addEventListener('click', function() {
+            detectBtn.disabled = true;
+            detectBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i><span class="lang-en">Detecting...</span><span class="lang-hi">पहचान रहा...</span><span class="lang-gu">શોધી રહ્યું છે...</span>';
+            
+            // Clear previous results
+            locationResult.innerHTML = '';
+            locationResult.className = 'alert alert-info text-center';
+            locationResult.classList.remove('d-none');
+            
+            if (navigator.geolocation) {
+                console.log('Geolocation supported, requesting location...');
+                
+                const geoOptions = {
+                    enableHighAccuracy: true,
+                    timeout: 10000,  // 10 seconds
+                    maximumAge: 60000 // 1 minute
+                };
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        console.log('Location obtained:', position);
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        locationResult.innerHTML = `
+                            <div class="lang-en">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                Location found: ${lat.toFixed(4)}, ${lon.toFixed(4)}
+                            </div>
+                            <div class="lang-hi">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                स्थान मिला: ${lat.toFixed(4)}, ${lon.toFixed(4)}
+                            </div>
+                            <div class="lang-gu">
+                                <i class="fas fa-map-marker-alt me-2"></i>
+                                સ્થાન મળ્યું: ${lat.toFixed(4)}, ${lon.toFixed(4)}
+                            </div>
+                        `;
+                        
+                        // Send to server
+                        fetch('/api/geolocation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                latitude: lat,
+                                longitude: lon
+                            })
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Server response:', data);
+                            
+                            if (data.success) {
+                                // Set the district in the dropdown
+                                districtSelect.value = data.district_code;
+                                
+                                // Show success message
+                                locationResult.innerHTML = `
+                                    <div class="lang-en">
+                                        <i class="fas fa-check-circle me-2 text-success"></i>
+                                        ✅ Detected: ${data.district_name}
+                                    </div>
+                                    <div class="lang-hi">
+                                        <i class="fas fa-check-circle me-2 text-success"></i>
+                                        ✅ पहचाना गया: ${data.district_name_hindi}
+                                    </div>
+                                    <div class="lang-gu">
+                                        <i class="fas fa-check-circle me-2 text-success"></i>
+                                        ✅ શોધાયું: ${data.district_name_gujarati}
+                                    </div>
+                                    <div class="mt-2 small lang-en">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        Click "View District Performance" to continue
+                                    </div>
+                                    <div class="mt-2 small lang-hi">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        जारी रखने के लिए "जिला प्रदर्शन देखें" पर क्लिक करें
+                                    </div>
+                                    <div class="mt-2 small lang-gu">
+                                        <i class="fas fa-info-circle me-1"></i>
+                                        ચાલુ રાખવા માટે "જિલ્લો પ્રદર્શન જુઓ" પર ક્લિક કરો
+                                    </div>
+                                `;
+                                locationResult.className = 'alert alert-success text-center';
+                                
+                                // Auto-submit after 2 seconds
+                                setTimeout(() => {
+                                    document.getElementById('districtForm').submit();
+                                }, 2000);
+                                
+                            } else {
+                                throw new Error(data.error || 'Unknown error from server');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            locationResult.innerHTML = `
+                                <div class="lang-en">
+                                    <i class="fas fa-times-circle me-2 text-danger"></i>
+                                    ❌ Error: ${error.message}
+                                </div>
+                                <div class="lang-hi">
+                                    <i class="fas fa-times-circle me-2 text-danger"></i>
+                                    ❌ त्रुटि: ${error.message}
+                                </div>
+                                <div class="lang-gu">
+                                    <i class="fas fa-times-circle me-2 text-danger"></i>
+                                    ❌ ભૂલ: ${error.message}
+                                </div>
+                                <div class="mt-2 small lang-en">
+                                    Please select your district manually from the dropdown.
+                                </div>
+                                <div class="mt-2 small lang-hi">
+                                    कृपया ड्रॉपडाउन से अपना जिला मैन्युअली चुनें।
+                                </div>
+                                <div class="mt-2 small lang-gu">
+                                    કૃપા કરીને ડ્રોપડાઉનમાંથી તમારો જિલ્લો મેન્યુઅલી પસંદ કરો.
+                                </div>
+                            `;
+                            locationResult.className = 'alert alert-danger text-center';
+                        })
+                        .finally(() => {
+                            detectBtn.disabled = false;
+                            detectBtn.innerHTML = '<i class="fas fa-location-arrow me-2"></i><span class="lang-en">Auto Detect My District</span><span class="lang-hi">मेरा जिला स्वचालित पहचानें</span><span class="lang-gu">મારો જિલ્લો સ્વચાલિત ઓળખો</span>';
+                        });
+                    },
+                    function(error) {
+                        console.error('Geolocation error:', error);
+                        detectBtn.disabled = false;
+                        detectBtn.innerHTML = '<i class="fas fa-location-arrow me-2"></i><span class="lang-en">Auto Detect My District</span><span class="lang-hi">मेरा जिला स्वचालित पहचानें</span><span class="lang-gu">મારો જિલ્લો સ્વચાલિત ઓળખો</span>';
+                        
+                        let errorMessage = '';
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = `
+                                    <div class="lang-en">
+                                        <i class="fas fa-shield-alt me-2 text-warning"></i>
+                                        🔒 Location access denied by browser
+                                    </div>
+                                    <div class="lang-hi">
+                                        <i class="fas fa-shield-alt me-2 text-warning"></i>
+                                        🔒 ब्राउज़र द्वारा स्थान एक्सेस अस्वीकृत
+                                    </div>
+                                    <div class="lang-gu">
+                                        <i class="fas fa-shield-alt me-2 text-warning"></i>
+                                        🔒 બ્રાઉઝર દ્વારા સ્થાન ઍક્સેસ નકારવામાં આવી
+                                    </div>
+                                    <div class="mt-2 small lang-en">
+                                        Please allow location access in your browser settings or select manually.
+                                    </div>
+                                    <div class="mt-2 small lang-hi">
+                                        कृपया अपनी ब्राउज़र सेटिंग्स में स्थान एक्सेस की अनुमति दें या मैन्युअली चुनें।
+                                    </div>
+                                    <div class="mt-2 small lang-gu">
+                                        કૃપા કરીને તમારી બ્રાઉઝર સેટિંગ્સમાં સ્થાન ઍક્સેસની પરવાનગી આપો અથવા મેન્યુઅલી પસંદ કરો.
+                                    </div>
+                                `;
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = `
+                                    <div class="lang-en">
+                                        <i class="fas fa-wifi me-2 text-warning"></i>
+                                        📡 Location information unavailable
+                                    </div>
+                                    <div class="lang-hi">
+                                        <i class="fas fa-wifi me-2 text-warning"></i>
+                                        📡 स्थान जानकारी अनुपलब्ध
+                                    </div>
+                                    <div class="lang-gu">
+                                        <i class="fas fa-wifi me-2 text-warning"></i>
+                                        📡 સ્થાન માહિતી ઉપલબ્ધ નથી
+                                    </div>
+                                `;
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = `
+                                    <div class="lang-en">
+                                        <i class="fas fa-clock me-2 text-warning"></i>
+                                        ⏰ Location request timed out
+                                    </div>
+                                    <div class="lang-hi">
+                                        <i class="fas fa-clock me-2 text-warning"></i>
+                                        ⏰ स्थान अनुरोध समय समाप्त
+                                    </div>
+                                    <div class="lang-gu">
+                                        <i class="fas fa-clock me-2 text-warning"></i>
+                                        ⏰ સ્થાન વિનંતી સમય સમાપ્ત
+                                    </div>
+                                `;
+                                break;
+                            default:
+                                errorMessage = `
+                                    <div class="lang-en">
+                                        <i class="fas fa-question-circle me-2 text-warning"></i>
+                                        ❓ Unknown error occurred
+                                    </div>
+                                    <div class="lang-hi">
+                                        <i class="fas fa-question-circle me-2 text-warning"></i>
+                                        ❓ अज्ञात त्रुटि हुई
+                                    </div>
+                                    <div class="lang-gu">
+                                        <i class="fas fa-question-circle me-2 text-warning"></i>
+                                        ❓ અજ્ઞાત ભૂલ આવી
+                                    </div>
+                                `;
+                        }
+                        
+                        locationResult.innerHTML = errorMessage;
+                        locationResult.className = 'alert alert-warning text-center';
+                        locationResult.classList.remove('d-none');
+                    },
+                    geoOptions
+                );
+            } else {
+                detectBtn.disabled = false;
+                detectBtn.innerHTML = '<i class="fas fa-location-arrow me-2"></i><span class="lang-en">Auto Detect My District</span><span class="lang-hi">मेरा जिला स्वचालित पहचानें</span><span class="lang-gu">મારો જિલ્લો સ્વચાલિત ઓળખો</span>';
+                
+                locationResult.innerHTML = `
+                    <div class="lang-en">
+                        <i class="fas fa-times-circle me-2 text-danger"></i>
+                        ❌ Geolocation not supported by your browser
+                    </div>
+                    <div class="lang-hi">
+                        <i class="fas fa-times-circle me-2 text-danger"></i>
+                        ❌ आपके ब्राउज़र द्वारा जियोलोकेशन समर्थित नहीं है
+                    </div>
+                    <div class="lang-gu">
+                        <i class="fas fa-times-circle me-2 text-danger"></i>
+                        ❌ તમારા બ્રાઉઝર દ્વારા જીઓલોકેશન સપોર્ટેડ નથી
+                    </div>
+                    <div class="mt-2 small lang-en">
+                        Please update your browser or select district manually.
+                    </div>
+                    <div class="mt-2 small lang-hi">
+                        कृपया अपना ब्राउज़र अपडेट करें या जिला मैन्युअली चुनें।
+                    </div>
+                    <div class="mt-2 small lang-gu">
+                        કૃપા કરીને તમારું બ્રાઉઝર અપડેટ કરો અથવા જિલ્લો મેન્યુઅલી પસંદ કરો.
+                    </div>
+                `;
+                locationResult.className = 'alert alert-danger text-center';
+                locationResult.classList.remove('d-none');
+            }
+        });
+    }
+    
+    // Test function to simulate location detection (for development)
+    function simulateLocationDetection() {
+        console.log('Simulating location detection...');
+        // This simulates Ahmedabad coordinates
+        const mockLat = 23.0225;
+        const mockLon = 72.5714;
+        
+        fetch('/api/geolocation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                latitude: mockLat,
+                longitude: mockLon
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Mock location result:', data);
+            if (data.success) {
+                districtSelect.value = data.district_code;
+                alert(`Mock detection: ${data.district_name}`);
+            }
+        });
+    }
+    
+    // Uncomment the line below to enable mock location for testing
+    // simulateLocationDetection();
+});
+</script>
 {% endblock %}

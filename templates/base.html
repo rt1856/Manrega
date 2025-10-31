@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ current_language }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,18 +8,96 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Gujarati:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/responsive.css') }}" rel="stylesheet">
+    <style>
+        /* Language-specific display */
+        .lang-en { display: none; }
+        .lang-hi { display: none; }
+        .lang-gu { display: none; }
+        
+        .language-en .lang-en { display: block !important; }
+        .language-hi .lang-hi { display: block !important; }
+        .language-gu .lang-gu { display: block !important; }
+        
+        /* Font families */
+        .lang-hi, .hindi-text {
+            font-family: 'Noto Sans Devanagari', sans-serif;
+        }
+        .lang-gu, .gujarati-text {
+            font-family: 'Noto Sans Gujarati', sans-serif;
+        }
+        
+        /* Language Selector */
+        .language-selector {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            padding: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 2px solid #007bff;
+        }
+        .language-btn {
+            background: none;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            padding: 8px 15px;
+            margin: 2px;
+            font-weight: bold;
+            transition: all 0.3s;
+            color: #007bff;
+        }
+        .language-btn.active,
+        .language-btn:hover {
+            background: #007bff;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        /* Card styling fixes */
+        .card {
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.125);
+            margin-bottom: 1rem;
+        }
+        .card-body {
+            color: #333 !important;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            font-weight: bold;
+            border-bottom: 1px solid rgba(0,0,0,0.125);
+        }
+        .bg-light .card-body {
+            color: #333 !important;
+        }
+        
+        /* Ensure text visibility */
+        .text-muted {
+            opacity: 0.8 !important;
+        }
+        
+        /* Progress bars */
+        .progress {
+            height: 8px;
+            background-color: #e9ecef;
+        }
+        .progress-bar {
+            background-color: #28a745;
+        }
+    </style>
 </head>
-<body>
+<body class="language-{{ current_language }}">
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container">
             <a class="navbar-brand" href="/">
                 <i class="fas fa-hands-helping me-2"></i>
-                <span class="english-text">MGNREGA Gujarat</span>
-                <span class="hindi-text">मनरेगा गुजरात</span>
-                <span class="gujarati-text">મનરેગા ગુજરાત</span>
+                <span class="lang-en">MGNREGA Gujarat</span>
+                <span class="lang-hi">मनरेगा गुजरात</span>
+                <span class="lang-gu">મનરેગા ગુજરાત</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -29,17 +107,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/">
                             <i class="fas fa-home me-1"></i>
-                            <span class="english-text">Home</span>
-                            <span class="hindi-text">होम</span>
-                            <span class="gujarati-text">હોમ</span>
+                            <span class="lang-en">Home</span>
+                            <span class="lang-hi">होम</span>
+                            <span class="lang-gu">હોમ</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/comparison">
                             <i class="fas fa-chart-line me-1"></i>
-                            <span class="english-text">Compare</span>
-                            <span class="hindi-text">तुलना</span>
-                            <span class="gujarati-text">તુલના</span>
+                            <span class="lang-en">Compare</span>
+                            <span class="lang-hi">तुलना</span>
+                            <span class="lang-gu">તુલના</span>
                         </a>
                     </li>
                 </ul>
@@ -57,20 +135,20 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h6 class="english-text">MGNREGA District Performance Monitoring</h6>
-                    <h6 class="hindi-text">मनरेगा जिला प्रदर्शन मॉनिटरिंग</h6>
-                    <h6 class="gujarati-text">મનરેગા જિલ્લો પ્રદર્શન મોનિટરિંગ</h6>
+                    <h6 class="lang-en">MGNREGA District Performance Monitoring</h6>
+                    <h6 class="lang-hi">मनरेगा जिला प्रदर्शन मॉनिटरिंग</h6>
+                    <h6 class="lang-gu">મનરેગા જિલ્લો પ્રદર્શન મોનિટરિંગ</h6>
                     <p class="text-muted small mb-0">
-                        <span class="english-text">Data Source: data.gov.in</span>
-                        <span class="hindi-text">डेटा स्रोत: data.gov.in</span>
-                        <span class="gujarati-text">ડેટા સ્રોત: data.gov.in</span>
+                        <span class="lang-en">Data Source: data.gov.in</span>
+                        <span class="lang-hi">डेटा स्रोत: data.gov.in</span>
+                        <span class="lang-gu">ડેટા સ્રોત: data.gov.in</span>
                     </p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <p class="small text-muted mb-0">
-                        <span class="english-text">Empowering Rural India</span>
-                        <span class="hindi-text">ग्रामीण भारत को सशक्त बनाना</span>
-                        <span class="gujarati-text">ગ્રામીણ ભારતને સશક્ત બનાવવું</span>
+                        <span class="lang-en">Empowering Rural India</span>
+                        <span class="lang-hi">ग्रामीण भारत को सशक्त बनाना</span>
+                        <span class="lang-gu">ગ્રામીણ ભારતને સશક્ત બનાવવું</span>
                     </p>
                     <p class="small text-muted mb-0">
                         &copy; 2024 MGNREGA Gujarat Dashboard
@@ -80,11 +158,95 @@
         </div>
     </footer>
 
+    <!-- Language Selector -->
+    <div class="language-selector">
+        <button class="language-btn {% if current_language == 'gu' %}active{% endif %}" onclick="setLanguage('gu')">
+            ગુજરાતી
+        </button>
+        <button class="language-btn {% if current_language == 'hi' %}active{% endif %}" onclick="setLanguage('hi')">
+            हिंदी
+        </button>
+        <button class="language-btn {% if current_language == 'en' %}active{% endif %}" onclick="setLanguage('en')">
+            English
+        </button>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/location.js') }}"></script>
+    <script>
+        function setLanguage(language) {
+            fetch('/set_language', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({language: language})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        }
+
+        // Auto-detect location
+        function detectLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        fetch('/api/geolocation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                latitude: lat,
+                                longitude: lon
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Redirect to dashboard with detected district
+                                window.location.href = `/dashboard?district=${data.district_code}`;
+                            } else {
+                                document.getElementById('locationResult').innerHTML = 
+                                    '<span class="lang-en">Location detected but district not found</span>' +
+                                    '<span class="lang-hi">स्थान का पता चला लेकिन जिला नहीं मिला</span>' +
+                                    '<span class="lang-gu">સ્થાન શોધાયું પણ જિલ્લો મળ્યો નથી</span>';
+                                document.getElementById('locationResult').classList.remove('d-none');
+                            }
+                        });
+                    },
+                    function(error) {
+                        document.getElementById('locationResult').innerHTML = 
+                            '<span class="lang-en">Location access denied. Please select manually.</span>' +
+                            '<span class="lang-hi">स्थान एक्सेस अस्वीकृत। कृपया मैन्युअली चुनें।</span>' +
+                            '<span class="lang-gu">સ્થાન ઍક્સેસ નકારવામાં આવી. કૃપા કરીને મેન્યુઅલી પસંદ કરો.</span>';
+                        document.getElementById('locationResult').classList.remove('d-none');
+                    }
+                );
+            } else {
+                document.getElementById('locationResult').innerHTML = 
+                    '<span class="lang-en">Geolocation not supported by your browser</span>' +
+                    '<span class="lang-hi">आपके ब्राउज़र द्वारा जियोलोकेशन समर्थित नहीं है</span>' +
+                    '<span class="lang-gu">તમારા બ્રાઉઝર દ્વારા જીઓલોકેશન સપોર્ટેડ નથી</span>';
+                document.getElementById('locationResult').classList.remove('d-none');
+            }
+        }
+
+        // Initialize location detection on index page
+        document.addEventListener('DOMContentLoaded', function() {
+            const detectBtn = document.getElementById('detectLocation');
+            if (detectBtn) {
+                detectBtn.addEventListener('click', detectLocation);
+            }
+        });
+    </script>
     {% block scripts %}{% endblock %}
 </body>
 </html>
